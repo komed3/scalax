@@ -1,0 +1,31 @@
+{
+  "name": "scalax",
+  "description": "Lightweight package for calculating linear, logarithmic and radial scales",
+  "author": {
+    "name": "komed3 (Paul Köhler)",
+    "email": "webmaster@komed3.de",
+    "url": "https://komed3.de"
+  },
+  "homepage": "https://github.com/komed3/scalax",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "devDependencies": {
+    "@types/node": "^24.0.3",
+    "typescript": "^5.8.3"
+  },
+  "scripts": {},
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/komed3/scalax.git"
+  },
+  "bugs": {
+    "url": "https://github.com/komed3/scalax/issues"
+  }
+}
