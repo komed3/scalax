@@ -38,21 +38,21 @@ export class LinearScale extends Scale {
     protected override compute () : boolean {
 
         const range: number = this.nearest (
-            this.upperBound - this.lowerBound,
+            this.upperBound! - this.lowerBound!,
             false
         );
 
         this.stepSize = this.nearest(
-            range / ( this.maxTicks - 1 ),
+            range / ( this.maxTicks! - 1 ),
             true
         );
 
         this.min = Math.floor(
-            this.lowerBound / this.stepSize
+            this.lowerBound! / this.stepSize
         ) * this.stepSize;
 
         this.max = Math.ceil(
-            this.upperBound / this.stepSize
+            this.upperBound! / this.stepSize
         ) * this.stepSize;
 
         this.range = this.max - this.min;

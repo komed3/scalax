@@ -2,15 +2,15 @@
 
 export abstract class Scale {
 
-    protected lowerBound: number;
-    protected upperBound: number;
-    protected maxTicks: number;
+    protected lowerBound?: number;
+    protected upperBound?: number;
+    protected maxTicks?: number;
 
-    protected min: number;
-    protected max: number;
-    protected stepSize: number;
-    protected tickAmount: number;
-    protected range: number;
+    protected min?: number;
+    protected max?: number;
+    protected stepSize?: number;
+    protected tickAmount?: number;
+    protected range?: number;
 
     private is: boolean = false;
 
@@ -99,11 +99,11 @@ export abstract class Scale {
 
     }
 
-    public getLowerBound () : number { return this.lowerBound }
+    public getLowerBound () : number | undefined { return this.lowerBound }
 
-    public getUpperBound () : number { return this.upperBound }
+    public getUpperBound () : number | undefined { return this.upperBound }
 
-    public getMaxTicks () : number { return this.maxTicks }
+    public getMaxTicks () : number | undefined { return this.maxTicks }
 
     public run () : this {
 
@@ -127,19 +127,19 @@ export abstract class Scale {
 
     public isReady () : boolean { return this.is }
 
-    public isNegative () : boolean { return this.is && this.max <= 0 }
+    public isNegative () : boolean { this.assert(); return this.max! <= 0 }
 
-    public crossesZero () : boolean { return this.is && this.min < 0 && this.max > 0 }
+    public crossesZero () : boolean { this.assert(); return this.min! < 0 && this.max! > 0 }
 
-    public getMinium () : number | undefined { this.assert(); return this.min }
+    public getMinium () : number { this.assert(); return this.min! }
 
-    public getMaximum () : number | undefined { this.assert(); return this.max }
+    public getMaximum () : number { this.assert(); return this.max! }
 
-    public getStepSize () : number | undefined { this.assert(); return this.stepSize }
+    public getStepSize () : number { this.assert(); return this.stepSize! }
 
-    public getTickAmount () : number | undefined { this.assert(); return this.tickAmount }
+    public getTickAmount () : number { this.assert(); return this.tickAmount! }
 
-    public getRange () : number | undefined { this.assert(); return this.range }
+    public getRange () : number { this.assert(); return this.range! }
 
     public getTicks () {}
 
