@@ -44,6 +44,14 @@ export abstract class Scale {
 
     }
 
+    protected computeTicks () : number[] {
+
+        throw new Error (
+            `This method must be overwritten by the extending subclass`
+        );
+
+    }
+
     public setBounds ( low: number, high: number ) : this {
 
         low = Number ( low ), high = Number ( high );
@@ -112,5 +120,21 @@ export abstract class Scale {
     public getTickAmount () : number { this.assert(); return this.tickAmount! }
 
     public getRange () : number { this.assert(); return this.range! }
+
+    public getTicks () : number[] {
+
+        this.assert();
+
+        return this.computeTicks().map( t => Number( t.toFixed( 8 ) ) );
+
+    }
+
+    public getTicksReverse () : number[] {
+
+        this.assert();
+
+        return this.getTicks().reverse();
+
+    }
 
 }

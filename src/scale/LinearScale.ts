@@ -73,4 +73,12 @@ export class LinearScale extends Scale {
 
     }
 
+    protected override computeTicks () : number[] {
+
+        return this.is ? Array.from( { length: this.tickAmount! },
+            ( _, i ) => this.min! + ( i * this.stepSize! )
+        ) : [];
+
+    }
+
 }

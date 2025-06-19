@@ -1,5 +1,11 @@
 'use strict';
 
-export { LinearScale } from './scale/LinearScale.js';
-export { LogarithmicScale } from './scale/LogarithmicScale.js';
-export { RadialScale } from './scale/RadialScale.js';
+import { LinearScale } from './scale/LinearScale.js';
+import { LogarithmicScale } from './scale/LogarithmicScale.js';
+import { RadialScale } from './scale/RadialScale.js';
+
+export const Scale = {
+    linear: LinearScale,
+    logarithmic: LogarithmicScale,
+    radial: RadialScale
+}
