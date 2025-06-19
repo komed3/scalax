@@ -4,13 +4,13 @@ import { Scale } from './Scale.js';
 
 export class LinearScale extends Scale {
 
-    constructor ( low?: number, high?: number, ticks?: number ) {
+    constructor ( low?: number, high?: number, maxTicks?: number ) {
 
-        super ( low, high, ticks );
+        super ( low, high, maxTicks );
 
     }
 
-    protected override nearest ( value: number, round: boolean ) : number {
+    private nearest ( value: number, round: boolean ) : number {
 
         const exp: number = Math.floor( Math.log10( value ) );
         const val: number = value / Math.pow( 10, exp );
@@ -37,43 +37,39 @@ export class LinearScale extends Scale {
 
     protected override compute () : boolean {
 
-        const range: number = this.nearest (
-            this.upperBound! - this.lowerBound!,
-            false
-        );
+        if (
+            this.lowerBound !== undefined &&
+            this.upperBound !== undefined &&
+            this.maxTicks !== undefined
+        ) {
 
-        this.stepSize = this.nearest(
-            range / ( this.maxTicks! - 1 ),
-            true
-        );
+            const range: number = this.nearest(
+                this.upperBound - this.lowerBound,
+                false
+            );
 
-        this.min = Math.floor(
-            this.lowerBound! / this.stepSize
-        ) * this.stepSize;
+            this.stepSize = this.nearest(
+                range / ( this.maxTicks! - 1 ),
+                true
+            );
 
-        this.max = Math.ceil(
-            this.upperBound! / this.stepSize
-        ) * this.stepSize;
+            this.min = Math.floor(
+                this.lowerBound / this.stepSize
+            ) * this.stepSize;
 
-        this.range = this.max - this.min;
+            this.max = Math.ceil(
+                this.upperBound / this.stepSize
+            ) * this.stepSize;
 
-        this.tickAmount = this.range / this.stepSize + 1;
+            this.range = this.max - this.min;
 
-        return true;
+            this.tickAmount = this.range / this.stepSize + 1;
 
-    }
+            return true;
 
-    protected override calcTicks () : number[] {
+        }
 
-        return Array.from( { length: this.tickAmount! },
-            ( _, i ) => this.min! + ( i * this.stepSize! )
-        );
-
-    }
-
-    protected override calcPointAt( pct: number ) : number {
-
-        return this.min! + ( pct * this.range! );
+        return false;
 
     }
 

@@ -14,15 +14,11 @@ export abstract class Scale {
 
     protected is: boolean = false;
 
-    private readonly placeholder = new Error (
-        `This method must be overwritten by the extending subclass`
-    );
-
-    constructor ( low?: number, high?: number, ticks?: number ) {
+    constructor ( low?: number, high?: number, maxTicks?: number ) {
 
         if ( low !== undefined && high !== undefined ) this.setBounds( low, high );
 
-        if ( ticks !== undefined ) this.setMaxTicks( ticks );
+        if ( maxTicks !== undefined ) this.setMaxTicks( maxTicks );
 
     }
 
@@ -34,43 +30,13 @@ export abstract class Scale {
 
     }
 
-    protected nearest ( value: number, ...opts: any ) : any {
-
-        void [ value, opts ];
-
-        throw this.placeholder;
-
-    }
-
-    protected compute ( ...opts: any ) : boolean {
+    protected compute ( ...opts: any[] ) : boolean {
 
         void [ opts ];
 
-        throw this.placeholder;
-
-    }
-
-    protected calcTicks ( ...opts: any ) : number[] {
-
-        void [ opts ];
-
-        throw this.placeholder;
-
-    }
-
-    protected calcPos ( value: number, bound: 'low' | 'high' ) : number {
-
-        void [ value, bound ];
-
-        throw this.placeholder;
-
-    }
-
-    protected calcPointAt ( pct: number ) : number {
-
-        void [ pct ];
-
-        throw this.placeholder;
+        throw new Error (
+            `This method must be overwritten by the extending subclass`
+        );
 
     }
 
@@ -80,74 +46,32 @@ export abstract class Scale {
 
         this.lowerBound = Math.min( low, high );
         this.upperBound = Math.max( low, high );
-        this.is = false;
 
         return this;
 
     }
 
-    public setMaxTicks ( ticks: number ) : this {
+    public setMaxTicks ( maxTicks: number ) : this {
 
-        this.maxTicks = Math.max( 1, Number ( ticks ) );
-        this.is = false;
+        this.maxTicks = Number ( maxTicks );
 
         return this;
 
     }
 
-    public centerAt ( value: number = 0 ) : this {
+    public run ( ...opts: any[] ) : boolean {
 
-        if (
-            this.lowerBound !== undefined &&
-            this.upperBound !== undefined
-        ) {
-
-            value = Number ( value );
-
-            let abs = Math.max(
-                Math.abs( value - this.lowerBound ),
-                Math.abs( value - this.upperBound )
-            );
-
-            this.lowerBound = value - abs;
-            this.upperBound = value + abs;
-            this.is = false;
-
-            return this;
-
-        }
-
-        throw new Error (
-            `The lower and upper bounds need to be set, call setBounds()`
-        );
+        return this.is = this.compute( opts );
 
     }
 
-    public getLowerBound () : number | undefined { return this.lowerBound }
+    public getBounds () : { lower: number | undefined, upper: number | undefined } {
 
-    public getUpperBound () : number | undefined { return this.upperBound }
+        return { lower: this.lowerBound, upper: this.upperBound };
+
+    }
 
     public getMaxTicks () : number | undefined { return this.maxTicks }
-
-    public run ( ...opts: any ) : this {
-
-        if (
-            this.lowerBound !== undefined &&
-            this.upperBound !== undefined &&
-            this.maxTicks !== undefined
-        ) {
-
-            this.is = this.compute( opts );
-
-            return this;
-
-        }
-
-        throw new Error (
-            `The scale cannot be calculated yet, first set bounds and ticks`
-        );
-
-    }
 
     public isReady () : boolean { return this.is }
 
@@ -155,30 +79,8 @@ export abstract class Scale {
 
     public crossesZero () : boolean { this.assert(); return this.min! < 0 && this.max! > 0 }
 
-    public getMinium () : number { this.assert(); return this.min! }
+    public getMinimum () : number { this.assert(); return this.min! }
 
     public getMaximum () : number { this.assert(); return this.max! }
-
-    public getStepSize () : number { this.assert(); return this.stepSize! }
-
-    public getTickAmount () : number { this.assert(); return this.tickAmount! }
-
-    public getRange () : number { this.assert(); return this.range! }
-
-    public getTicks () : number[] {
-        this.assert(); return this.calcTicks();
-    }
-
-    public getReverseTicks () : number[] {
-        this.assert(); return this.calcTicks().reverse();
-    }
-
-    public getPos ( value: number, bound: 'low' | 'high' = 'low' ) : number {
-        this.assert(); return this.calcPos( value, bound );
-    }
-
-    public getPointAt ( pct: number ) : number {
-        this.assert(); return this.calcPointAt( pct );
-    }
 
 }
