@@ -79,9 +79,39 @@ export abstract class Scale {
 
     }
 
+    public centerAt ( value: number = 0 ) : this {
+
+        if (
+            this.lowerBound !== undefined &&
+            this.upperBound !== undefined
+        ) {
+
+            value = Number ( value );
+
+            const abs: number = Math.max(
+                Math.abs( value - this.lowerBound ),
+                Math.abs( value - this.upperBound )
+            );
+
+            this.lowerBound = value - abs;
+            this.upperBound = value + abs;
+            this.is = false;
+
+            return this;
+
+        }
+
+        throw new Error (
+            `The lower and upper bounds need to be set, call setBounds()`
+        );
+
+    }
+
     public run ( ...opts: any[] ) : this {
 
-        this.is = this.compute( opts );
+        if ( ! ( this.is = this.compute( opts ) ) ) throw new Error (
+            `Failed to compute the scale, make sure boundaries and ticks are set`
+        );
 
         return this;
 
