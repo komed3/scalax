@@ -14,11 +14,11 @@ export class LogarithmicScale extends Scale {
 
         super ( low, high, ticks );
 
-        if ( base !== undefined ) this.base = Number ( base );
+        if ( base !== undefined ) this.setBase( base );
 
     }
 
-    private calcBase ( value: number ) : number {
+    private _base ( value: number ) : number {
 
         return value === 0 ? 0 : (
             Math.log( Math.abs( Number ( value ) ) ) /
@@ -27,11 +27,11 @@ export class LogarithmicScale extends Scale {
 
     };
 
-    protected override nearest ( value: number ) : { lower: number, upper: number } {
+    private _nearest ( value: number ) : { lower: number, upper: number } {
 
         if ( value === 0 ) return { lower: 0, upper: 0 };
 
-        const logValue = this.calcBase( value );
+        const logValue = this._base( value );
         const sign = value < 1 ? -1 : 1;
 
         return {
@@ -43,25 +43,35 @@ export class LogarithmicScale extends Scale {
 
     protected override compute () : boolean {
 
-        const nearestLower = this.nearest( this.lowerBound! );
-        const nearestUpper = this.nearest( this.upperBound! );
+        if (
+            this.lowerBound !== undefined &&
+            this.upperBound !== undefined &&
+            this.base !== undefined
+        ) {
 
-        this.min = this.lowerBound! < 0
-            ? nearestLower.upper
-            : nearestLower.lower;
+            const nearestLower = this._nearest( this.lowerBound );
+            const nearestUpper = this._nearest( this.upperBound );
 
-        this.max = this.upperBound! < 0
-            ? nearestUpper.lower
-            : nearestUpper.upper;
+            this.min = this.lowerBound < 0
+                ? nearestLower.upper
+                : nearestLower.lower;
 
-        this.range = this.max - this.min;
+            this.max = this.upperBound < 0
+                ? nearestUpper.lower
+                : nearestUpper.upper;
 
-        this.logMin = this.calcBase( this.min );
-        this.logMax = this.calcBase( this.max );
+            this.range = this.max - this.min;
 
-        this.logRange = this.logMax - this.logMin;
+            this.logMin = this._base( this.min );
+            this.logMax = this._base( this.max );
 
-        return true;
+            this.logRange = this.logMax - this.logMin;
+
+            return true;
+
+        }
+
+        return false;
 
     }
 

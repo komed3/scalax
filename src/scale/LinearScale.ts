@@ -10,7 +10,7 @@ export class LinearScale extends Scale {
 
     }
 
-    private nearest ( value: number, round: boolean ) : number {
+    private _nearest ( value: number, round: boolean ) : number {
 
         const exp: number = Math.floor( Math.log10( value ) );
         const val: number = value / Math.pow( 10, exp );
@@ -43,12 +43,12 @@ export class LinearScale extends Scale {
             this.maxTicks !== undefined
         ) {
 
-            const range: number = this.nearest(
+            const range: number = this._nearest(
                 this.upperBound - this.lowerBound,
                 false
             );
 
-            this.stepSize = this.nearest(
+            this.stepSize = this._nearest(
                 range / ( this.maxTicks! - 1 ),
                 true
             );
