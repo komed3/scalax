@@ -12,7 +12,7 @@ export abstract class Scale {
     protected tickAmount?: number;
     protected range?: number;
 
-    private is: boolean = false;
+    protected is: boolean = false;
 
     constructor ( low?: number, high?: number, ticks?: number ) {
 
