@@ -83,4 +83,10 @@ export abstract class Scale {
 
     public getMaximum () : number { this.assert(); return this.max! }
 
+    public getStepSize () : number { this.assert(); return this.stepSize! }
+
+    public getTickAmount () : number { this.assert(); return this.tickAmount! }
+
+    public getRange () : number { this.assert(); return this.range! }
+
 }
