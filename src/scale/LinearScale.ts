@@ -75,9 +75,23 @@ export class LinearScale extends Scale {
 
     protected override computeTicks () : number[] {
 
-        return this.is ? Array.from( { length: this.tickAmount! },
+        return Array.from( { length: this.tickAmount! },
             ( _, i ) => this.min! + ( i * this.stepSize! )
-        ) : [];
+        );
+
+    }
+
+    protected override computePoint ( pct: number ) : number {
+
+        return ( this.range! * ( pct > 1 ? pct / 100 : pct ) ) + this.min!;
+
+    }
+
+    protected override computePct ( value: number, ref: 'min' | 'max' ) : number {
+
+        const pct: number = ( value - this.min! ) / this.range!;
+
+        return ref === 'max' ? 1 - pct : pct;
 
     }
 

@@ -109,6 +109,43 @@ export abstract class Scale {
     }
 
     /**
+     * Computes a point on the scale based on a percentage.
+     * This method must be overridden by extending subclasses.
+     * 
+     * @param {number} pct - The percentage (0 to 1) to compute the point for
+     * @returns {number[]} - An array representing the computed point
+     * @throws {Error} If this method is not overridden
+     */
+    protected computePoint ( pct: number ) : number {
+
+        void [ pct ];
+
+        throw new Error (
+            `This method must be overwritten by the extending subclass`
+        );
+
+    }
+
+    /**
+     * Computes the percentage of a value relative to the scale's min or max.
+     * This method must be overridden by extending subclasses.
+     * 
+     * @param {number} value - The value to compute the percentage for
+     * @param {'min' | 'max'} ref - Reference point, either 'min' or 'max'
+     * @returns {number} - The computed percentage
+     * @throws {Error} If this method is not overridden
+     */
+    protected computePct ( value: number, ref: 'min' | 'max' ) : number {
+
+        void [ value, ref ];
+
+        throw new Error (
+            `This method must be overwritten by the extending subclass`
+        );
+
+    }
+
+    /**
      * Sets the bounds for the scale.
      * 
      * @param {number} low - The lower bound of the scale
@@ -327,6 +364,37 @@ export abstract class Scale {
         this.assert();
 
         return this.getTicks().reverse();
+
+    }
+
+    /**
+     * Get a point on the scale at a given percentage.
+     * 
+     * @param {number} pct - The percentage (0 to 1) to compute the point for
+     * @returns {number} - The computed point on the scale
+     * @throws {Error} If the scale is not ready
+     */
+    public getPointAt ( pct: number ) : number {
+
+        this.assert();
+
+        return this.computePoint( pct );
+
+    }
+
+    /**
+     * Get the percentage of a value relative to the scale's min or max.
+     * 
+     * @param {number} value - The value to compute the percentage for
+     * @param {'min' | 'max'} [ref='min'] - Reference point, either 'min' or 'max'
+     * @returns {number} - The computed percentage
+     * @throws {Error} If the scale is not ready
+     */
+    public getPct ( value: number, ref: 'min' | 'max' = 'min' ) : number {
+
+        this.assert();
+
+        return this.computePct( value, ref );
 
     }
 
