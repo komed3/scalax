@@ -50,7 +50,7 @@ export abstract class Scale {
 
     }
 
-    protected calculateTicks ( ...opts: any ) : number[] {
+    protected calcTicks ( ...opts: any ) : number[] {
 
         void [ opts ];
 
@@ -151,9 +151,9 @@ export abstract class Scale {
 
     public getRange () : number { this.assert(); return this.range! }
 
-    public getTicks () : number[] { this.assert(); return this.calculateTicks() }
+    public getTicks () : number[] { this.assert(); return this.calcTicks() }
 
-    public getReverseTicks () : number[] { this.assert(); return this.calculateTicks().reverse() }
+    public getReverseTicks () : number[] { this.assert(); return this.calcTicks().reverse() }
 
     public getPos () {}
 

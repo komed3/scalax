@@ -63,7 +63,7 @@ export class LinearScale extends Scale {
 
     }
 
-    protected override calculateTicks () : number[] {
+    protected override calcTicks () : number[] {
 
         this.assert();
 
