@@ -1,5 +1,5 @@
 'use strict';
 
-import { Scale } from './Scale';
+import { Scale } from './Scale.js';
 
 export class LogarithmicScale extends Scale {}

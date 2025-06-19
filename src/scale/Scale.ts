@@ -16,9 +16,9 @@ export abstract class Scale {
 
     constructor ( low?: number, high?: number, ticks?: number ) {
 
-        if ( low && high ) this.setBounds( low, high );
+        if ( low !== undefined && high !== undefined ) this.setBounds( low, high );
 
-        if ( ticks ) this.setMaxTicks( ticks );
+        if ( ticks !== undefined ) this.setMaxTicks( ticks );
 
     }
 
@@ -49,6 +49,16 @@ export abstract class Scale {
         );
 
     }
+
+    protected calculateTicks ( ...opts: any ) : number[] {
+
+        void [ opts ];
+
+        throw new Error (
+            `This method must be overwritten by the extending subclass`
+        );
+
+    } 
 
     public setBounds ( low: number, high: number ) : this {
 
@@ -105,7 +115,7 @@ export abstract class Scale {
 
     public getMaxTicks () : number | undefined { return this.maxTicks }
 
-    public run () : this {
+    public run ( ...opts: any ) : this {
 
         if (
             this.lowerBound !== undefined &&
@@ -113,7 +123,7 @@ export abstract class Scale {
             this.maxTicks !== undefined
         ) {
 
-            this.is = this.compute();
+            this.is = this.compute( opts );
 
             return this;
 
@@ -141,9 +151,9 @@ export abstract class Scale {
 
     public getRange () : number { this.assert(); return this.range! }
 
-    public getTicks () {}
+    public getTicks () : number[] { this.assert(); return this.calculateTicks() }
 
-    public getReverseTicks () {}
+    public getReverseTicks () : number[] { this.assert(); return this.calculateTicks().reverse() }
 
     public getPos () {}
 

@@ -1,6 +1,6 @@
 'use strict';
 
-import { Scale } from './Scale';
+import { Scale } from './Scale.js';
 
 export class LinearScale extends Scale {
 
@@ -60,6 +60,16 @@ export class LinearScale extends Scale {
         this.tickAmount = this.range / this.stepSize + 1;
 
         return true;
+
+    }
+
+    protected override calculateTicks () : number[] {
+
+        this.assert();
+
+        return Array.from( { length: this.tickAmount! },
+            ( _, i ) => this.min! + ( i * this.stepSize! )
+        );
 
     }
 
