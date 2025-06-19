@@ -2,15 +2,15 @@
 
 export abstract class Scale {
 
-    private lowerBound: number;
-    private upperBound: number;
-    private maxTicks: number;
+    protected lowerBound: number;
+    protected upperBound: number;
+    protected maxTicks: number;
 
-    private min: number;
-    private max: number;
-    private stepSize: number;
-    private tickAmount: number;
-    private range: number;
+    protected min: number;
+    protected max: number;
+    protected stepSize: number;
+    protected tickAmount: number;
+    protected range: number;
 
     private is: boolean = false;
 
@@ -30,7 +30,19 @@ export abstract class Scale {
 
     }
 
-    protected compute () : boolean {
+    protected nearest ( value: number, ...opts: any ) : any {
+
+        void [ value, opts ];
+
+        throw new Error (
+            `This method must be overwritten by the extending subclass`
+        );
+
+    }
+
+    protected compute ( ...opts: any ) : boolean {
+
+        void [ opts ];
 
         throw new Error (
             `This method must be overwritten by the extending subclass`
