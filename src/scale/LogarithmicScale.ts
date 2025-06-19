@@ -10,9 +10,9 @@ export class LogarithmicScale extends Scale {
     protected logMax?: number;
     protected logRange?: number;
 
-    constructor ( low?: number, high?: number, ticks?: number, base?: number ) {
+    constructor ( low?: number, high?: number, ticks?: number, base?: number, precision?: number ) {
 
-        super ( low, high, ticks );
+        super ( low, high, ticks, precision );
 
         if ( base !== undefined ) this.setBase( base );
 

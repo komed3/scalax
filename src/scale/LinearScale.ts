@@ -4,9 +4,9 @@ import { Scale } from './Scale.js';
 
 export class LinearScale extends Scale {
 
-    constructor ( low?: number, high?: number, maxTicks?: number ) {
+    constructor ( low?: number, high?: number, maxTicks?: number, precision?: number ) {
 
-        super ( low, high, maxTicks );
+        super ( low, high, maxTicks, precision );
 
     }
 
@@ -35,37 +35,37 @@ export class LinearScale extends Scale {
 
     }
 
-    protected override compute () : boolean {
+    protected override compute() : boolean {
 
         if (
+            this.precision !== undefined &&
             this.lowerBound !== undefined &&
             this.upperBound !== undefined &&
             this.maxTicks !== undefined
         ) {
 
             const range: number = this._nearest(
-                this.upperBound - this.lowerBound,
-                false
+                this.upperBound - this.lowerBound, false
             );
 
-            this.stepSize = this._nearest(
-                range / ( this.maxTicks! - 1 ),
-                true
+            this.stepSize = Math.max(
+                this._nearest( range / ( this.maxTicks - 1 ), true ),
+                this.precision
             );
 
-            this.min = Math.floor(
-                this.lowerBound / this.stepSize
-            ) * this.stepSize;
+            do {
 
-            this.max = Math.ceil(
-                this.upperBound / this.stepSize
-            ) * this.stepSize;
+                this.min = Math.floor( this.lowerBound / this.stepSize ) * this.stepSize;
+                this.max = Math.ceil( this.upperBound / this.stepSize ) * this.stepSize;
+                this.range = this.max - this.min;
 
-            this.range = this.max - this.min;
+                this.tickAmount = Math.round( this.range / this.stepSize ) + 1;
 
-            this.tickAmount = this.range / this.stepSize + 1;
+                if ( this.tickAmount <= this.maxTicks ) return true;
 
-            return true;
+                this.stepSize = this._nearest( this.stepSize + this.precision, true );
+
+            } while ( true );
 
         }
 

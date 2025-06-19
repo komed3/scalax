@@ -2,6 +2,8 @@
 
 export abstract class Scale {
 
+    protected precision: number = 1;
+
     protected lowerBound?: number;
     protected upperBound?: number;
     protected maxTicks?: number;
@@ -14,11 +16,13 @@ export abstract class Scale {
 
     protected is: boolean = false;
 
-    constructor ( low?: number, high?: number, maxTicks?: number ) {
+    constructor ( low?: number, high?: number, maxTicks?: number, precision?: number ) {
 
         if ( low !== undefined && high !== undefined ) this.setBounds( low, high );
 
         if ( maxTicks !== undefined ) this.setMaxTicks( maxTicks );
+
+        if ( precision !== undefined ) this.setPrecision( precision );
 
     }
 
@@ -59,6 +63,14 @@ export abstract class Scale {
 
     }
 
+    public setPrecision ( precision: number ) : this {
+
+        this.precision = Number ( precision );
+
+        return this;
+
+    }
+
     public run ( ...opts: any[] ) : this {
 
         this.is = this.compute( opts );
@@ -74,6 +86,8 @@ export abstract class Scale {
     }
 
     public getMaxTicks () : number | undefined { return this.maxTicks }
+
+    public getPrecision () : number { return this.precision }
 
     public isReady () : boolean { return this.is }
 
