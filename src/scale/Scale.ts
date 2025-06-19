@@ -25,7 +25,15 @@ export abstract class Scale {
     protected assert () : void {
 
         if ( ! this.is ) throw new Error (
-            `Scale is not yet ready; set the bounds, ticks and then call compute()`
+            `Scale is not yet ready; set the bounds, ticks and then call run()`
+        );
+
+    }
+
+    protected compute () : boolean {
+
+        throw new Error (
+            `This method must be overwritten by the extending subclass`
         );
 
     }
@@ -74,7 +82,7 @@ export abstract class Scale {
         }
 
         throw new Error (
-            `lower and upper bounds need to be set, call setBounds()`
+            `The lower and upper bounds need to be set, call setBounds()`
         );
 
     }
@@ -84,6 +92,26 @@ export abstract class Scale {
     public getUpperBound () : number { return this.upperBound }
 
     public getMaxTicks () : number { return this.maxTicks }
+
+    public run () : this {
+
+        if (
+            this.lowerBound !== undefined &&
+            this.upperBound !== undefined &&
+            this.maxTicks !== undefined
+        ) {
+
+            this.is = this.compute();
+
+            return this;
+
+        }
+
+        throw new Error (
+            `The scale cannot be calculated yet, first set bounds and ticks`
+        );
+
+    }
 
     public isReady () : boolean { return this.is }
 
