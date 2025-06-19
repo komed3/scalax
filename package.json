@@ -24,7 +24,13 @@
   "scripts": {
     "build": "tsc"
   },
-  "keywords": [],
+  "keywords": [
+    "scale",
+    "linear-scale",
+    "logarithmic-scale",
+    "radial-scale",
+    "range"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/komed3/scalax.git"
