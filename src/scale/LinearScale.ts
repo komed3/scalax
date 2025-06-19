@@ -65,11 +65,15 @@ export class LinearScale extends Scale {
 
     protected override calcTicks () : number[] {
 
-        this.assert();
-
         return Array.from( { length: this.tickAmount! },
             ( _, i ) => this.min! + ( i * this.stepSize! )
         );
+
+    }
+
+    protected override calcPointAt( pct: number ) : number {
+
+        return this.min! + ( pct * this.range! );
 
     }
 

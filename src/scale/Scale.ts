@@ -14,6 +14,10 @@ export abstract class Scale {
 
     protected is: boolean = false;
 
+    private readonly placeholder = new Error (
+        `This method must be overwritten by the extending subclass`
+    );
+
     constructor ( low?: number, high?: number, ticks?: number ) {
 
         if ( low !== undefined && high !== undefined ) this.setBounds( low, high );
@@ -34,9 +38,7 @@ export abstract class Scale {
 
         void [ value, opts ];
 
-        throw new Error (
-            `This method must be overwritten by the extending subclass`
-        );
+        throw this.placeholder;
 
     }
 
@@ -44,9 +46,7 @@ export abstract class Scale {
 
         void [ opts ];
 
-        throw new Error (
-            `This method must be overwritten by the extending subclass`
-        );
+        throw this.placeholder;
 
     }
 
@@ -54,11 +54,25 @@ export abstract class Scale {
 
         void [ opts ];
 
-        throw new Error (
-            `This method must be overwritten by the extending subclass`
-        );
+        throw this.placeholder;
 
-    } 
+    }
+
+    protected calcPos ( value: number, bound: 'low' | 'high' ) : number {
+
+        void [ value, bound ];
+
+        throw this.placeholder;
+
+    }
+
+    protected calcPointAt ( pct: number ) : number {
+
+        void [ pct ];
+
+        throw this.placeholder;
+
+    }
 
     public setBounds ( low: number, high: number ) : this {
 
@@ -151,12 +165,20 @@ export abstract class Scale {
 
     public getRange () : number { this.assert(); return this.range! }
 
-    public getTicks () : number[] { this.assert(); return this.calcTicks() }
+    public getTicks () : number[] {
+        this.assert(); return this.calcTicks();
+    }
 
-    public getReverseTicks () : number[] { this.assert(); return this.calcTicks().reverse() }
+    public getReverseTicks () : number[] {
+        this.assert(); return this.calcTicks().reverse();
+    }
 
-    public getPos () {}
+    public getPos ( value: number, bound: 'low' | 'high' = 'low' ) : number {
+        this.assert(); return this.calcPos( value, bound );
+    }
 
-    public getPointAt () {}
+    public getPointAt ( pct: number ) : number {
+        this.assert(); return this.calcPointAt( pct );
+    }
 
 }

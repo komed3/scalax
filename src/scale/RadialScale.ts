@@ -1,12 +1,12 @@
 'use strict';
 
-import { Scale } from './Scale.js';
+import { LinearScale } from './LinearScale.js';
 
-export class RadialScale extends Scale {
+export class RadialScale extends LinearScale {
 
-    constructor ( ticks?: number ) {
+    constructor ( ticks?: number, low: number = 0, high: number = 360 ) {
 
-        super ( 0, 360, ticks );
+        super ( low % 360, high % 360, ticks );
 
     }
 
