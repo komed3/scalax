@@ -4,7 +4,13 @@ export abstract class Scale {
 
     private lowerBound: number;
     private upperBound: number;
-    private ticks: number;
+    private maxTicks: number;
+
+    private min: number;
+    private max: number;
+    private stepSize: number;
+    private tickAmount: number;
+    private range: number;
 
     private is: boolean = false;
 
@@ -13,6 +19,14 @@ export abstract class Scale {
         if ( low && high ) this.setBounds( low, high );
 
         if ( ticks ) this.setMaxTicks( ticks );
+
+    }
+
+    protected assert () : void {
+
+        if ( ! this.is ) throw new Error (
+            `Scale is not yet ready; set the bounds, ticks and then call compute()`
+        );
 
     }
 
@@ -30,7 +44,7 @@ export abstract class Scale {
 
     public setMaxTicks ( ticks: number ) : this {
 
-        this.ticks = Math.max( 1, Number ( ticks ) );
+        this.maxTicks = Math.max( 1, Number ( ticks ) );
         this.is = false;
 
         return this;
@@ -69,22 +83,30 @@ export abstract class Scale {
 
     public getUpperBound () : number { return this.upperBound }
 
-    public getMaxTicks () : number { return this.ticks }
+    public getMaxTicks () : number { return this.maxTicks }
 
     public isReady () : boolean { return this.is }
 
-    getMinium () {}
+    public isNegative () : boolean { return this.is && this.max <= 0 }
 
-    getMaximum () {}
+    public crossesZero () : boolean { return this.is && this.min < 0 && this.max > 0 }
 
-    getRange () {}
+    public getMinium () : number | undefined { this.assert(); return this.min }
 
-    getTicks () {}
+    public getMaximum () : number | undefined { this.assert(); return this.max }
 
-    getReverseTicks () {}
+    public getStepSize () : number | undefined { this.assert(); return this.stepSize }
 
-    getPos () {}
+    public getTickAmount () : number | undefined { this.assert(); return this.tickAmount }
 
-    getPointAt () {}
+    public getRange () : number | undefined { this.assert(); return this.range }
+
+    public getTicks () {}
+
+    public getReverseTicks () {}
+
+    public getPos () {}
+
+    public getPointAt () {}
 
 }
