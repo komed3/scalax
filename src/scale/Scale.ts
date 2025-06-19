@@ -59,9 +59,11 @@ export abstract class Scale {
 
     }
 
-    public run ( ...opts: any[] ) : boolean {
+    public run ( ...opts: any[] ) : this {
 
-        return this.is = this.compute( opts );
+        this.is = this.compute( opts );
+
+        return this;
 
     }
 
@@ -82,6 +84,14 @@ export abstract class Scale {
     public getMinimum () : number { this.assert(); return this.min! }
 
     public getMaximum () : number { this.assert(); return this.max! }
+
+    public getExtrema () : { min: number, max: number } {
+
+        this.assert();
+
+        return { min: this.min!, max: this.max! };
+
+    }
 
     public getStepSize () : number { this.assert(); return this.stepSize! }
 
