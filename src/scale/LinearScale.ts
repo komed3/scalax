@@ -47,7 +47,7 @@ export class LinearScale extends Scale {
      * @param {boolean} round - Whether to round or floor the value
      * @returns {number} The nearest value
      */
-    protected _nearest ( value: number, round: boolean ) : number {
+    private _nearest ( value: number, round: boolean ) : number {
 
         const exp: number = Math.floor( Math.log10( value ) );
         const val: number = value / Math.pow( 10, exp );
@@ -86,10 +86,12 @@ export class LinearScale extends Scale {
             this.maxTicks !== undefined
         ) {
 
+            // Calculate the "nice" range
             const range: number = this._nearest(
                 this.upperBound - this.lowerBound, false
             );
 
+            // Find a nice step size (linear)
             this.stepSize = Math.max(
                 this._nearest( range / ( this.maxTicks - 1 ), true ),
                 this.precision
@@ -97,14 +99,18 @@ export class LinearScale extends Scale {
 
             do {
 
+                // Keep the boundaries within the scales extrema
                 this.min = Math.floor( this.lowerBound / this.stepSize ) * this.stepSize;
                 this.max = Math.ceil( this.upperBound / this.stepSize ) * this.stepSize;
                 this.range = this.max - this.min;
 
+                // Calculate the final tick amount
                 this.tickAmount = Math.round( this.range / this.stepSize ) + 1;
 
+                // If this fits the requirements, return `true`
                 if ( this.tickAmount <= this.maxTicks ) return true;
 
+                // If not, try with a bigger step size
                 this.stepSize = this._nearest( this.stepSize + this.precision, true );
 
             } while ( true );
