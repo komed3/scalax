@@ -2,7 +2,8 @@
  * Radial Scale
  * src/scale/RadialScale.ts
  * 
- * This module defines the `RadialScale` class that extends the `Scale` class.
+ * This module defines the `RadialScale` which that extends
+ * the `LinearScale` class.
  * 
  * The RadialScale is used to create circular or angular scales, supporting
  * both full circles (0–360°) and arbitrary arc segments (e.g., 90–270°).
@@ -15,7 +16,7 @@
 
 'use strict';
 
-import { Scale } from './Scale.js';
+import { LinearScale } from './LinearScale.js';
 
 /**
  * Represents a radial scale for for circular or arc-based charts.
@@ -23,9 +24,9 @@ import { Scale } from './Scale.js';
  * maximum ticks, and precision. It ensures correct handling of circular
  * wrap-around and supports arbitrary arc segments.
  *
- * @extends Scale
+ * @extends LinearScale
  */
-export class RadialScale extends Scale {
+export class RadialScale extends LinearScale {
 
     /**
      * Creates a new RadialScale instance.
@@ -37,14 +38,16 @@ export class RadialScale extends Scale {
      */
     constructor ( maxTicks?: number, precision?: number, low: number = 0, high: number = 360 ) {
 
-        low = Number ( low ), high = Number ( high );
+        low = Number ( low ) % 360, high = Number ( high ) % 360;
 
-        // Normalize bounds first (0-360)
-        const lower = low % 360;
-        const upper = high % 360 + ( high % 360 < lower ? 360 : 0 );
+        // Fix the upper bound to fit full circles (0–360°)
+        high += ( high < low ? 360 : 0 );
+
+        // Fix special case: full circle
+        if ( low === high ) low = 0, high = 360;
 
         // Call the parent constructor with the provided parameters
-        super ( lower, upper, maxTicks, precision );
+        super ( low, high, maxTicks, precision );
 
     }
 
@@ -54,7 +57,7 @@ export class RadialScale extends Scale {
      * @param {number} value - The value to round
      * @returns {number} The nearest angular value
      */
-    private _nearest ( value: number ) : number {
+    protected override _nearest ( value: number ) : number {
 
         // Special handling for radial scales (degrees)
         const commonDegrees: number[] = [ 0, 1, 2, 5, 10, 15, 30, 45, 60, 90, 120, 180, 360 ];
@@ -105,11 +108,17 @@ export class RadialScale extends Scale {
                 this.min = Math.floor( this.lowerBound / this.stepSize ) * this.stepSize;
                 this.max = Math.ceil( this.upperBound / this.stepSize ) * this.stepSize;
 
-                // Special case: if range is ~360, make it exactly 0-360
-                if ( this.max - this.min >= 355 ) this.min = 0, this.max = 360;
-
                 this.range = this.max - this.min;
                 this.tickAmount = Math.round( this.range / this.stepSize ) + 1;
+
+                // Special case: if range is ~360, make it exactly 0-360
+                if ( this.max - this.min >= 355 ) {
+
+                    this.min = 0, this.max = 360;
+                    this.range = 360;
+                    this.tickAmount--;
+
+                }
 
                 if ( this.tickAmount <= this.maxTicks ) return true;
 
@@ -126,6 +135,44 @@ export class RadialScale extends Scale {
         }
 
         return false;
+
+    }
+
+    /**
+     * Computes the tick values for the scale.
+     *
+     * @returns {number[]} An array of tick values
+     */
+    protected override computeTicks () : number[] {
+
+        return super.computeTicks().map( t => t % 360 );
+
+    }
+
+    /**
+     * Computes the point on the scale for a given percentage.
+     *
+     * @param {number} pct - The percentage (0 to 1) to compute the point for
+     * @returns {number} The computed point on the scale
+     */
+    protected override computePoint ( pct: number ) : number {
+
+        return ( ( super.computePoint( pct ) % 360 ) + 360 ) % 360;
+
+    }
+
+    /**
+     * Computes the percentage for a given value based on the scale's min and max.
+     *
+     * @param {number} value - The value to compute the percentage for
+     * @param {'min' | 'max'} ref - Reference point for percentage calculation
+     * @returns {number} The computed percentage (0 to 1)
+     */
+    protected override computePct ( value: number, ref: 'min' | 'max' ) : number {
+
+        const pct = ( ( value - this.min! ) % 360 + 360 ) % 360 / this.range!;
+
+        return ref === 'max' ? 1 - pct : pct;
 
     }
 
