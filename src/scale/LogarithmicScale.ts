@@ -6,19 +6,15 @@ export class LogarithmicScale extends Scale {
 
     protected base: number = 10;
 
-    protected logMin?: number;
-    protected logMax?: number;
-    protected logRange?: number;
+    constructor ( low?: number, high?: number, maxTicks?: number, precision?: number, base?: number ) {
 
-    constructor ( low?: number, high?: number, ticks?: number, base?: number, precision?: number ) {
-
-        super ( low, high, ticks, precision );
+        super ( low, high, maxTicks, precision );
 
         if ( base !== undefined ) this.setBase( base );
 
     }
 
-    private _base ( value: number ) : number {
+    protected _base ( value: number ) : number {
 
         return value === 0 ? 0 : (
             Math.log( Math.abs( Number ( value ) ) ) /
@@ -27,51 +23,31 @@ export class LogarithmicScale extends Scale {
 
     };
 
-    private _nearest ( value: number ) : { lower: number, upper: number } {
+    protected _nearest ( value: number ) : { lower: number, upper: number } {
 
-        if ( value === 0 ) return { lower: 0, upper: 0 };
+        const sign: number = Math.sign( value ) || 1;
 
-        const logValue = this._base( value );
-        const sign = value < 1 ? -1 : 1;
+        if ( Math.abs( value ) < this.precision ) return sign > 0
+            ? { lower: 0, upper: this.precision }
+            : { lower: -this.precision, upper: 0 };
 
-        return {
-            lower: Math.pow( this.base, Math.floor( logValue ) ) * sign,
-            upper: Math.pow( this.base, Math.ceil( logValue ) ) * sign
-        };
+        let expLower: number = Math.floor( this._base( value ) );
+        let expUpper: number = expLower + 1;
 
-    }
+        let lower: number, upper: number;
 
-    protected override compute () : boolean {
+        do {
 
-        if (
-            this.lowerBound !== undefined &&
-            this.upperBound !== undefined &&
-            this.base !== undefined
-        ) {
+            lower = Number ( Math.pow( this.base, expLower ).toFixed( 9 ) );
+            upper = Number ( Math.pow( this.base, expUpper ).toFixed( 9 ) );
 
-            const nearestLower = this._nearest( this.lowerBound );
-            const nearestUpper = this._nearest( this.upperBound );
+            if ( ( upper - lower ) >= this.precision ) return {
+                lower: lower * sign, upper: upper * sign
+            }
 
-            this.min = this.lowerBound < 0
-                ? nearestLower.upper
-                : nearestLower.lower;
+            expLower--, expUpper++;
 
-            this.max = this.upperBound < 0
-                ? nearestUpper.lower
-                : nearestUpper.upper;
-
-            this.range = this.max - this.min;
-
-            this.logMin = this._base( this.min );
-            this.logMax = this._base( this.max );
-
-            this.logRange = this.logMax - this.logMin;
-
-            return true;
-
-        }
-
-        return false;
+        } while ( true );
 
     }
 
