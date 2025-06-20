@@ -32,11 +32,10 @@ export class RadialScale extends LinearScale {
      * Creates a new RadialScale instance.
      * 
      * @param {number} [maxTicks] - The maximum number of ticks on the scale
-     * @param {number} [precision] - The precision for the scale calculations
      * @param {number} [low=0] - The starting angle (in degrees)
      * @param {number} [high=360] - The ending angle (in degrees)
      */
-    constructor ( maxTicks?: number, precision?: number, low: number = 0, high: number = 360 ) {
+    constructor ( maxTicks?: number, low: number = 0, high: number = 360 ) {
 
         low = Number ( low ) % 360, high = Number ( high ) % 360;
 
@@ -47,7 +46,7 @@ export class RadialScale extends LinearScale {
         if ( low === high ) low = 0, high = 360;
 
         // Call the parent constructor with the provided parameters
-        super ( low, high, maxTicks, precision );
+        super ( low, high, maxTicks, 1 );
 
     }
 
@@ -60,7 +59,7 @@ export class RadialScale extends LinearScale {
     protected override _nearest ( value: number ) : number {
 
         // Special handling for radial scales (degrees)
-        const commonDegrees: number[] = [ 0, 1, 2, 5, 10, 15, 30, 45, 60, 90, 120, 180, 360 ];
+        const commonDegrees: number[] = [ 0, 1, 2, 3, 5, 6, 10, 15, 30, 45, 60, 90, 120, 180, 360 ];
 
         // Find the closest common degree value
         let nearest: number = commonDegrees[ 0 ];
