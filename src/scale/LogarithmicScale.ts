@@ -25,11 +25,17 @@ export class LogarithmicScale extends Scale {
 
     protected _nearest ( value: number ) : { lower: number, upper: number } {
 
+        if ( value === 0 ) return { lower: 0, upper: 0 };
+
         const sign: number = Math.sign( value ) || 1;
 
         if ( Math.abs( value ) < this.precision ) return sign > 0
             ? { lower: 0, upper: this.precision }
             : { lower: -this.precision, upper: 0 };
+
+        const isInt: boolean = Number.isInteger(
+            Number ( this._base( value ).toFixed( 9 ) )
+        );
 
         let expLower: number = Math.floor( this._base( value ) );
         let expUpper: number = expLower + 1;
@@ -42,7 +48,7 @@ export class LogarithmicScale extends Scale {
             upper = Number ( Math.pow( this.base, expUpper ).toFixed( 9 ) );
 
             if ( ( upper - lower ) >= this.precision ) return {
-                lower: lower * sign, upper: upper * sign
+                lower: lower * sign, upper: ( isInt ? lower : upper ) * sign
             }
 
             expLower--, expUpper++;
