@@ -1,6 +1,6 @@
 {
   "name": "scalax",
-  "description": "Lightweight package for calculating linear, logarithmic and radial scales",
+  "description": "Lightweight package for calculating linear and radial scales",
   "author": {
     "name": "komed3 (Paul Köhler)",
     "email": "webmaster@komed3.de",
@@ -27,7 +27,6 @@
   "keywords": [
     "scale",
     "linear-scale",
-    "logarithmic-scale",
     "radial-scale",
     "range"
   ],
