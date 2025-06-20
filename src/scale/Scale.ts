@@ -17,6 +17,8 @@
 /**
  * Abstract base class for scales.
  * Provides methods for setting bounds, precision, and computing scale values.
+ * 
+ * @abstract
  */
 export abstract class Scale {
 

@@ -41,13 +41,13 @@ export class LinearScale extends Scale {
     }
 
     /**
-     * Returns the nearest value to the given value based on the specified rounding.
+     * Returns the nearest `nice` value to the given value based on the specified rounding.
      *
      * @param {number} value - The value to round
      * @param {boolean} round - Whether to round or floor the value
      * @returns {number} The nearest value
      */
-    private _nearest ( value: number, round: boolean ) : number {
+    protected _nearest ( value: number, round: boolean ) : number {
 
         const exp: number = Math.floor( Math.log10( value ) );
         const val: number = value / Math.pow( 10, exp );
