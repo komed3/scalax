@@ -145,6 +145,11 @@ export class LinearScale extends Scale {
      */
     protected override computePoint ( pct: number ) : number {
 
+        if ( pct < 0 || pct > 100 ) throw new Error (
+            `Given value <${pct}> is not a correct percentage, use a number ` +
+            `between <0> and <1> or <0> and <100>`
+        );
+
         return ( this.range! * ( pct > 1 ? pct / 100 : pct ) ) + this.min!;
 
     }
@@ -157,6 +162,10 @@ export class LinearScale extends Scale {
      * @returns {number} The computed percentage (0 to 1)
      */
     protected override computePct ( value: number, ref: 'min' | 'max' ) : number {
+
+        if ( value < this.min! || value > this.max! ) throw new Error (
+            `Point <${value}> is outside the range <${this.min}, ${this.max}>`
+        );
 
         const pct: number = ( value - this.min! ) / this.range!;
 
