@@ -160,6 +160,7 @@ export abstract class Scale {
 
         this.lowerBound = Math.min( low, high );
         this.upperBound = Math.max( low, high );
+        this.is = false;
 
         return this;
 
@@ -173,7 +174,12 @@ export abstract class Scale {
      */
     public setMaxTicks ( maxTicks: number ) : this {
 
-        this.maxTicks = Number ( maxTicks );
+        if ( ( maxTicks = Number ( maxTicks ) ) <= 1 ) throw new Error (
+            `Maximum number of ticks must be an integer value greater than <1>, <${maxTicks}> given`
+        );
+
+        this.maxTicks = Math.round( maxTicks );
+        this.is = false;
 
         return this;
 
@@ -187,7 +193,12 @@ export abstract class Scale {
      */
     public setPrecision ( precision: number ) : this {
 
-        this.precision = Number ( precision );
+        if ( ( precision = Number ( precision ) ) <= 0 ) throw new Error (
+            `Precision must be greater than <0>, <${precision}> given`
+        );
+
+        this.precision = precision;
+        this.is = false;
 
         return this;
 
