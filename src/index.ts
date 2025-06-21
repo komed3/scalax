@@ -8,6 +8,8 @@
  * The scalax library offers flexible and extensible scale types, including:
  * 
  * - LinearScale:      For evenly spaced, linear numeric scales.
+ * - LogarithmicScale: For logarithmic scales, useful for data spanning several
+ *                     orders of magnitude.
  * - RadialScale:      For circular or angular scales, such as those used in
  *                     polar charts.
  * 
@@ -22,9 +24,11 @@
 'use strict';
 
 import { LinearScale } from './scale/LinearScale.js';
+import { LogarithmicScale } from './scale/LogarithmicScale.js';
 import { RadialScale } from './scale/RadialScale.js';
 
 export const Scale = {
     linear: LinearScale,
+    logarithmic: LogarithmicScale,
     radial: RadialScale
 }
