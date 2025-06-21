@@ -6,6 +6,8 @@ export class LogarithmicScale extends Scale {
 
     protected base: number = 10;
 
+    protected zero?: number;
+
     constructor ( low?: number, high?: number, maxTicks?: number, precision?: number, base?: number ) {
 
         super ( low, high, maxTicks, precision );
@@ -86,6 +88,15 @@ export class LogarithmicScale extends Scale {
 
     }
 
+    protected _zero ( ticks: number[] ) : number {
+
+        const cnt = ticks.filter( t => t !== 0 ).length;
+        const neg = ticks.filter( t => t < 0 ).length;
+
+        return cnt ? neg / cnt : 0;
+
+    }
+
     protected override compute () : boolean {
 
         if (
@@ -110,6 +121,9 @@ export class LogarithmicScale extends Scale {
             this.max = this.ticks[ this.tickAmount - 1 ];
             this.range = this.max - this.min;
 
+            // Find the zero point
+            this.zero = this._zero( this.ticks );
+
             return true;
 
         }
@@ -117,6 +131,18 @@ export class LogarithmicScale extends Scale {
         return false;
 
     }
+
+    /*protected override computePoint ( pct: number ) : number {
+
+        //
+
+    }
+
+    protected override computePct ( value: number, ref: 'min' | 'max' ) : number {
+
+        //
+
+    }*/
 
     public setBase ( base: number ) : this {
 
