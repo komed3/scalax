@@ -39,33 +39,35 @@ export class LogarithmicScale extends Scale {
 
         const [ min, max ] = this._wrap( lower, upper, precision );
         const expMin: number = Math.round( this._base( precision ) );
-        const ticks: number[] = [];
+        const ticks: Set<number> = new Set ();
 
-        const pushTicks = ( sign: 1 | -1, to: number ) : void => {
+        const addRange = ( sign: 1 | -1, toExp: number ) : void => {
 
-            for ( let e = expMin; e <= to; e++ ) {
+            for ( let e: number = expMin; e <= toExp; e++ ) {
 
                 const tick: number = sign * Math.pow( this.base, e );
 
-                if ( ( sign === -1 && tick >= min ) || ( sign === 1 && tick <= max ) ) ticks.push( tick );
+                if ( tick >= min && tick <= max ) ticks.add( tick );
 
             }
 
         };
 
-        if ( min < 0 ) pushTicks( -1, Math.round( this._base( -min ) ) );
+        if ( min < 0 ) addRange( -1, Math.round( this._base( -min ) ) );
 
-        if ( lower * upper <= 0 || Math.min( Math.abs( lower ), Math.abs( upper ) ) < precision ) ticks.push( 0 );
+        if ( lower <= 0 && upper >= 0 || (
+            Math.min( Math.abs( lower ), Math.abs( upper ) ) < precision
+        ) ) ticks.add( 0 );
 
-        if ( max > 0 ) pushTicks( 1, Math.round( this._base( max ) ) );
+        if ( max > 0 ) addRange( 1, Math.round( this._base( max ) ) );
 
-        return ticks.sort( ( a, b ) => a - b );
+        return Array.from( ticks ).sort( ( a, b ) => a - b );
 
     }
 
-    protected _prune ( lower: number, upper: number, maxTicks: number ) : number[] {
+    protected _prune ( lower: number, upper: number, precision: number, maxTicks: number ) : number[] {
 
-        let prec: number = this.precision, attempts: number = 0, ticks: number[];
+        let prec: number = precision, attempts: number = 0, ticks: number[];
 
         do {
 
@@ -81,6 +83,38 @@ export class LogarithmicScale extends Scale {
         throw new Error(
             `Unable to reduce tick count to fit maximum allowed ticks <${maxTicks}>`
         );
+
+    }
+
+    protected override compute () : boolean {
+
+        if (
+            this.precision !== undefined &&
+            this.lowerBound !== undefined &&
+            this.upperBound !== undefined &&
+            this.maxTicks !== undefined &&
+            this.base !== undefined
+        ) {
+
+            // Computes the tick values
+            this.ticks = this._prune(
+                this.lowerBound, this.upperBound,
+                this.precision, this.maxTicks
+            );
+
+            // Calculate the tick amount
+            this.tickAmount = this.ticks.length;
+
+            // Calculate the extreme and range
+            this.min = this.ticks[ 0 ];
+            this.max = this.ticks[ this.tickAmount - 1 ];
+            this.range = this.max - this.min;
+
+            return true;
+
+        }
+
+        return false;
 
     }
 
