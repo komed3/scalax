@@ -159,6 +159,7 @@ export abstract class Scale {
      * 
      * @param {number} maxTicks - The maximum number of ticks
      * @returns {this} - Returns the current instance for method chaining
+     * @throws {Error} If the maximum number of ticks is not a valid integer greater than 1
      */
     public setMaxTicks ( maxTicks: number ) : this {
 
@@ -178,6 +179,7 @@ export abstract class Scale {
      * 
      * @param {number} precision - The precision value
      * @returns {this} - Returns the current instance for method chaining
+     * @throws {Error} If the precision is not a valid number greater than 0
      */
     public setPrecision ( precision: number ) : this {
 

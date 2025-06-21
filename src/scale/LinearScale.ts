@@ -142,6 +142,7 @@ export class LinearScale extends Scale {
      *
      * @param {number} pct - The percentage (0 to 1) to compute the point for
      * @returns {number} The computed point on the scale
+     * @throws {Error} If the percentage is not between 0 and 100
      */
     protected override computePoint ( pct: number ) : number {
 
@@ -160,6 +161,7 @@ export class LinearScale extends Scale {
      * @param {number} value - The value to compute the percentage for
      * @param {'min' | 'max'} ref - Reference point for percentage calculation
      * @returns {number} The computed percentage (0 to 1)
+     * @throws {Error} If the value is outside the scale's range
      */
     protected override computePct ( value: number, ref: 'min' | 'max' ) : number {
 
