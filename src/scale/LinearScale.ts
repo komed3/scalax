@@ -73,6 +73,17 @@ export class LinearScale extends Scale {
     }
 
     /**
+     * Computes the tick values for the scale.
+     *
+     * @returns {number[]} An array of tick values
+     */
+    protected _ticks ( ticks: number, stepSize: number, min: number ) : number[] {
+
+        return Array.from( { length: ticks }, ( _, i ) => min + ( i * stepSize ) );
+
+    }
+
+    /**
      * Computes the scale properties based on the provided bounds and precision.
      *
      * @returns {boolean} True if the scale was successfully computed, false otherwise
@@ -107,30 +118,22 @@ export class LinearScale extends Scale {
                 // Calculate the final tick amount
                 this.tickAmount = Math.round( this.range / this.stepSize ) + 1;
 
-                // If this fits the requirements, return `true`
-                if ( this.tickAmount <= this.maxTicks ) return true;
+                // If this fits the requirements, break
+                if ( this.tickAmount <= this.maxTicks ) break;
 
                 // If not, try with a bigger step size
                 this.stepSize = this._nearest( this.stepSize + this.precision, true );
 
             } while ( true );
 
+            // Computes the tick values
+            this.ticks = this._ticks( this.tickAmount, this.stepSize, this.min );
+
+            return true;
+
         }
 
         return false;
-
-    }
-
-    /**
-     * Computes the tick values for the scale.
-     *
-     * @returns {number[]} An array of tick values
-     */
-    protected override computeTicks () : number[] {
-
-        return Array.from( { length: this.tickAmount! },
-            ( _, i ) => this.min! + ( i * this.stepSize! )
-        );
 
     }
 

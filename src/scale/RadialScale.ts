@@ -119,7 +119,8 @@ export class RadialScale extends LinearScale {
 
                 }
 
-                if ( this.tickAmount <= this.maxTicks ) return true;
+                // If this fits the requirements, break
+                if ( this.tickAmount <= this.maxTicks ) break;
 
                 // If too many ticks, find the next nice angular step size
                 const nextSteps = [ 15, 30, 45, 60, 90, 120, 180, 360 ];
@@ -131,20 +132,14 @@ export class RadialScale extends LinearScale {
 
             } while ( true );
 
+            // Computes the tick values
+            this.ticks = this._ticks( this.tickAmount, this.stepSize, this.min ).map( t => t % 360 );
+
+            return true;
+
         }
 
         return false;
-
-    }
-
-    /**
-     * Computes the tick values for the scale.
-     *
-     * @returns {number[]} An array of tick values
-     */
-    protected override computeTicks () : number[] {
-
-        return super.computeTicks().map( t => t % 360 );
 
     }
 

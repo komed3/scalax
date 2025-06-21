@@ -39,6 +39,9 @@ export abstract class Scale {
     protected tickAmount?: number;
     protected range?: number;
 
+    // The computed ticks
+    protected ticks?: number[];
+
     // Indicates whether the scale is ready for use
     protected is: boolean = false;
 
@@ -88,21 +91,6 @@ export abstract class Scale {
     protected compute ( ...opts: any[] ) : boolean {
 
         void [ opts ];
-
-        throw new Error (
-            `This method must be overwritten by the extending subclass`
-        );
-
-    }
-
-    /**
-     * Computes the ticks for the scale.
-     * This method must be overridden by extending subclasses.
-     * 
-     * @returns {number[]} - An array of computed ticks
-     * @throws {Error} If this method is not overridden
-     */
-    protected computeTicks () : number[] {
 
         throw new Error (
             `This method must be overwritten by the extending subclass`
@@ -362,7 +350,7 @@ export abstract class Scale {
 
         this.assert();
 
-        return this.computeTicks().map( t => Number( t.toFixed( 8 ) ) );
+        return this.ticks!.map( t => Number( t.toFixed( 8 ) ) );
 
     }
 
