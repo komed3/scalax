@@ -6,8 +6,6 @@ export class LogarithmicScale extends Scale {
 
     protected base: number = 10;
 
-    protected zero?: number;
-
     constructor ( low?: number, high?: number, maxTicks?: number, precision?: number, base?: number ) {
 
         super ( low, high, maxTicks, precision );
@@ -88,15 +86,6 @@ export class LogarithmicScale extends Scale {
 
     }
 
-    protected _zero ( ticks: number[] ) : number {
-
-        const cnt = ticks.filter( t => t !== 0 ).length;
-        const neg = ticks.filter( t => t < 0 ).length;
-
-        return cnt ? neg / cnt : 0;
-
-    }
-
     protected override compute () : boolean {
 
         if (
@@ -121,14 +110,66 @@ export class LogarithmicScale extends Scale {
             this.max = this.ticks[ this.tickAmount - 1 ];
             this.range = this.max - this.min;
 
-            // Find the zero point
-            this.zero = this._zero( this.ticks );
-
             return true;
 
         }
 
         return false;
+
+    }
+
+    protected override computePct ( value: number, ref: 'min' | 'max' ) : number {
+
+        const { ticks = [], base, min = 0, max = 0 } = this;
+        const n: number = ticks.length;
+        const zeroIndex: number = ticks.indexOf( 0 );
+
+        if ( value < min || value > max ) throw new Error (
+            `Point <${value}> is outside the range <${min}, ${max}>`
+        );
+
+        // Return the zero point exactly
+        if ( zeroIndex !== -1 && value === 0 ) return Math.abs(
+            ( ref === 'max' ? 1 : 0 ) - zeroIndex / ( n - 1 )
+        );
+
+        const delta: number = Number.EPSILON;
+        const positions: number[] = ticks.map( ( _, i ) => i / ( n - 1 ) );
+
+        const log = ( v: number ) : number => (
+            Math.log( Math.abs( v ) + delta ) / Math.log( base )
+        );
+
+        // Find the intervall
+        const i0: number = ticks.findIndex( ( t, i ) => (
+            i < n - 1 && value >= t && value <= ticks[ i + 1 ]
+        ) );
+
+        let pos: number;
+
+        if ( i0 === -1 ) {
+
+            if ( value <= ticks[ 0 ] ) pos = 0;
+
+            else if ( value >= ticks[ n - 1 ] ) pos = 1;
+
+            else if ( zeroIndex !== -1 ) pos = value < 0
+                ? positions[ Math.max( 0, zeroIndex - 1 ) ]
+                : positions[ Math.min( n - 1, zeroIndex + 1 ) ];
+
+            else pos = value < ticks[ 0 ] ? 0 : 1;
+
+        } else {
+
+            const [ a, b ] = [ ticks[ i0 ], ticks[ i0 + 1 ] ];
+            const [ la, lb, lv ] = [ log( a ), log( b ), log( value ) ];
+            const t = Math.abs( lb - la ) < 1e-15 ? 0 : ( lv - la ) / ( lb - la );
+
+            pos = positions[ i0 ] + t * ( positions[ i0 + 1 ] - positions[ i0 ] );
+
+        }
+
+        return ref === 'max' ? 1 - pos : pos;
 
     }
 
