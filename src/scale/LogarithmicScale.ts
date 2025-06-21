@@ -132,18 +132,6 @@ export class LogarithmicScale extends Scale {
 
     }
 
-    /*protected override computePoint ( pct: number ) : number {
-
-        //
-
-    }
-
-    protected override computePct ( value: number, ref: 'min' | 'max' ) : number {
-
-        //
-
-    }*/
-
     public setBase ( base: number ) : this {
 
         if ( ( base = Number ( base ) ) <= 1 ) throw new Error (
