@@ -14,6 +14,76 @@ export class LogarithmicScale extends Scale {
 
     }
 
+    protected _base ( value: number ) : number {
+
+        return Math.log( Math.abs( value ) ) / Math.log( this.base );
+
+    }
+
+    protected _wrap ( lower: number, upper: number, precision: number ) : [ number, number ] {
+
+        const expPrec: number = Math.round( this._base( precision ) );
+
+        const bound = ( v: number, dir: 'floor' | 'ceil' ) => Math.pow(
+            this.base, Math.max( expPrec, Math[ dir ]( this._base( v ) ) )
+        );
+
+        const min: number = lower < 0 ? -bound( lower, 'ceil' ) : lower > 0 ?  bound( lower, 'floor' ) : 0;
+        const max: number = upper > 0 ?  bound( upper, 'ceil' ) : upper < 0 ? -bound( upper, 'floor' ) : 0;
+
+        return [ min, max ];
+
+    }
+
+    protected _rawTicks ( lower: number, upper: number, precision: number ) : number[] {
+
+        const [ min, max ] = this._wrap( lower, upper, precision );
+        const expMin: number = Math.round( this._base( precision ) );
+        const ticks: number[] = [];
+
+        const pushTicks = ( sign: 1 | -1, to: number ) : void => {
+
+            for ( let e = expMin; e <= to; e++ ) {
+
+                const tick: number = sign * Math.pow( this.base, e );
+
+                if ( ( sign === -1 && tick >= min ) || ( sign === 1 && tick <= max ) ) ticks.push( tick );
+
+            }
+
+        };
+
+        if ( min < 0 ) pushTicks( -1, Math.round( this._base( -min ) ) );
+
+        if ( lower * upper <= 0 || Math.min( Math.abs( lower ), Math.abs( upper ) ) < precision ) ticks.push( 0 );
+
+        if ( max > 0 ) pushTicks( 1, Math.round( this._base( max ) ) );
+
+        return ticks.sort( ( a, b ) => a - b );
+
+    }
+
+    protected _prune ( lower: number, upper: number, maxTicks: number ) : number[] {
+
+        let prec: number = this.precision, attempts: number = 0, ticks: number[];
+
+        do {
+
+            ticks = this._rawTicks( lower, upper, prec );
+
+            if ( ticks.length <= maxTicks ) return ticks;
+
+            prec = Math.pow( this.base, Math.round( this._base( prec ) + 1 ) );
+            attempts++;
+
+        } while ( attempts < 100 );
+
+        throw new Error(
+            `Unable to reduce tick count to fit maximum allowed ticks <${maxTicks}>`
+        );
+
+    }
+
     public setBase ( base: number ) : this {
 
         if ( ( base = Number ( base ) ) <= 1 ) throw new Error (
