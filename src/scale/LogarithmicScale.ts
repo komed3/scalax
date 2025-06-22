@@ -156,9 +156,8 @@ export class LogarithmicScale extends Scale {
 
             // If the tick count exceeds the maximum, increase precision
             prec = Math.pow( this.base, Math.round( this._base( prec ) + 1 ) );
-            attempts++;
 
-        } while ( attempts < 100 );
+        } while ( ++attempts < 100 );
 
         throw new Error(
             `Unable to reduce tick count to fit maximum allowed ticks <${maxTicks}>`

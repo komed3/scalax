@@ -73,6 +73,23 @@ export class LinearScale extends Scale {
     }
 
     /**
+     * Returns the next "nice" factor (2, 2.5, or 2) for the given step size.
+     * 
+     * @param {number} step - The current step size
+     * @returns {number} The factor to multiply with
+     */
+    protected _nextNiceFactor ( step: number ) : number {
+
+        const exp: number = Math.floor( Math.log10( step ) );
+        const val: number = step / Math.pow( 10, exp );
+
+        if ( val < 1.5 ) return 2 / val;
+        else if ( val < 3.5 ) return 5 / val;
+        else return 10 / val;
+
+    }
+
+    /**
      * Computes the tick values for the scale.
      *
      * @returns {number[]} An array of tick values
@@ -108,6 +125,8 @@ export class LinearScale extends Scale {
                 this.precision
             );
 
+            let attempts: number = 0;
+
             do {
 
                 // Keep the boundaries within the scales extrema
@@ -122,9 +141,14 @@ export class LinearScale extends Scale {
                 if ( this.tickAmount <= this.maxTicks ) break;
 
                 // If not, try with a bigger step size
-                this.stepSize = this._nearest( this.stepSize + this.precision, true );
+                this.stepSize = this.stepSize * this._nextNiceFactor( this.stepSize );
 
-            } while ( true );
+            } while ( ++attempts < 100 );
+
+            // To many attempts, scale calculation failed
+            if ( attempts === 100 ) throw new Error (
+                `The scale was unable to be calculated, try to allow more ticks`
+            );
 
             // Computes the tick values
             this.ticks = this._ticks( this.tickAmount, this.stepSize, this.min );
