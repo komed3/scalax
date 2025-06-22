@@ -3,6 +3,7 @@
 [![GitHub License](https://img.shields.io/github/license/komed3/scalax?style=for-the-badge&logo=unlicense&logoColor=fff)](LICENSE)
 [![Static Badge](https://img.shields.io/badge/Typescript-support?style=for-the-badge&logo=typescript&logoColor=fff&color=blue)](https://www.typescriptlang.org)
 [![GitHub package.json version](https://img.shields.io/github/package-json/v/komed3/scalax?style=for-the-badge&logo=npm&logoColor=fff)](https://npmjs.com/package/scalax)
+[![npm bundle size](https://img.shields.io/bundlephobia/min/scalax?style=for-the-badge&logo=gitlfs&logoColor=fff)](https://bundlephobia.com/package/scalax)
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/komed3/scalax/build.yml?style=for-the-badge&logo=educative&logoColor=fff)](https://github.com/komed3/scalax/actions/workflows/build.yml)
 
 The `scalax` npm package is a lightweight and extensible TypeScript library for calculating numerical scales. It is designed for use in data visualization, charting, and any context where you need to map values between different numeric domains. The library supports linear, logarithmic, and radial (circular) scales, each with a consistent and intuitive API.
@@ -159,3 +160,5 @@ console.log( log.getPct( 10 ) ); // 0.495...
 const radial = new Scale.radial( 0, 180, 5 ).run();
 console.log( radial.getTicks() ); // [ 0, 45, 90, 135, 180 ]
 ```
+
+_Try with [OneCompiler](https://onecompiler.com/nodejs/43nh9mk6n)_
