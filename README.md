@@ -5,9 +5,11 @@
 [![GitHub package.json version](https://img.shields.io/github/package-json/v/komed3/scalax?style=for-the-badge&logo=npm&logoColor=fff)](https://npmjs.com/package/scalax)
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/komed3/scalax/build.yml?style=for-the-badge&logo=educative&logoColor=fff)](https://github.com/komed3/scalax/actions/workflows/build.yml)
 
-The `scalax` npm package is a lightweight and extensible TypeScript library for calculating and transforming numerical scales. It is designed for use in data visualization, charting, and any context where you need to map values between different numeric domains. The library supports linear, logarithmic, and radial (circular) scales, each with a consistent and intuitive API.
+The `scalax` npm package is a lightweight and extensible TypeScript library for calculating numerical scales. It is designed for use in data visualization, charting, and any context where you need to map values between different numeric domains. The library supports linear, logarithmic, and radial (circular) scales, each with a consistent and intuitive API.
 
 Core features include locating “nice” step values at the same intervals, freely selectable granularity (how close together ticks may be) and the calculation of scales in both directions from zero – particularly useful for logarithmic scales. In addition, the library allows the computation of percentages into scale values and vice versa to facilitate graphical representations for data points.
+
+**This library is the successor to the two npm packages [linscale](https://www.npmjs.com/package/linscale) and [logarscale](https://www.npmjs.com/package/logarscale).**
 
 ## Installation
 
@@ -36,9 +38,9 @@ console.log( scale.getPct( 10 ) ); // Percentage position of value 10 on the sca
 
 `scalax` comes with three main scale types, each suited for different use cases:
 
-- **LinearScale**: Maps values evenly between a lower and upper bound. Useful for standard numeric axes.
-- **LogarithmicScale**: Maps values logarithmically, supporting both positive and negative domains as well as zero-crossing. Ideal for data spanning several orders of magnitude.
-- **RadialScale**: Designed for circular or angular data, such as degrees in a circle or arc segments. Handles wrap-around and arbitrary angular ranges.
+- **Linear scale**: Maps values evenly between a lower and upper bound. Useful for standard numeric axes.
+- **Logarithmic scale**: Maps values logarithmically, supporting both positive and negative domains as well as zero-crossing. Ideal for data spanning several orders of magnitude.
+- **Radial scale**: Designed for circular or angular data, such as degrees in a circle or arc segments. Handles wrap-around and arbitrary angular ranges.
 
 Each scale type is available via the `Scale` export:
 
