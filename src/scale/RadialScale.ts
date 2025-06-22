@@ -31,11 +31,11 @@ export class RadialScale extends LinearScale {
     /**
      * Creates a new RadialScale instance.
      * 
-     * @param {number} [maxTicks] - The maximum number of ticks on the scale
      * @param {number} [low=0] - The starting angle (in degrees)
      * @param {number} [high=360] - The ending angle (in degrees)
+     * @param {number} [maxTicks] - The maximum number of ticks on the scale
      */
-    constructor ( maxTicks?: number, low: number = 0, high: number = 360 ) {
+    constructor ( low: number = 0, high: number = 360, maxTicks?: number ) {
 
         low = Number ( low ) % 360, high = Number ( high ) % 360;
 
