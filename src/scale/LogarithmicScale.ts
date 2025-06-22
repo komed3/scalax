@@ -204,6 +204,69 @@ export class LogarithmicScale extends Scale {
     }
 
     /**
+     * Computes the point on the scale for a given percentage.
+     * 
+     * @param {number} pct - The percentage (0 to 1 or 0 to 100)
+     * @returns {number} The computed point on the scale
+     * @throws {Error} If the percentage is not between 0 and 100
+     */
+    protected override computePoint ( pct: number ) : number {
+
+        const { ticks = [], base } = this;
+        const p: number = pct > 1 ? pct / 100 : pct;
+        const n: number = ticks.length;
+        const zeroIndex: number = ticks.indexOf( 0 );
+
+        if ( p < 0 || p > 1 ) throw new Error(
+            `Given value <${pct}> is not a correct percentage, use a number ` +
+            `between <0> and <1> or <0> and <100>`
+        );
+
+        // Calculate the positions of the ticks in the range [0, 1]
+        const positions: number[] = ticks.map( ( _, i ) => i / ( n - 1 ) );
+
+        // If the value references the zero tick, return it directly
+        if ( zeroIndex !== -1 && p === positions[ zeroIndex ] ) return 0;
+
+        // Find the interval where the percentage lies
+        let i0: number = positions.findIndex(
+            ( pos, i ) => i < n - 1 && p >= pos && p <= positions[ i + 1 ]
+        );
+
+        // If no interval was found, handle edge cases
+        if ( i0 === -1 ) {
+
+            // If the percentage is at or below 0, return the first tick
+            if ( p <= 0 ) return ticks[ 0 ];
+
+            // If the percentage is at or above 1, return the last tick
+            if ( p >= 1 ) return ticks[ n - 1 ];
+
+            // If zero tick exists, determine if p is before or after zero
+            if ( zeroIndex !== -1 ) p < positions[ zeroIndex ]
+                ? ticks[ Math.max( 0, zeroIndex - 1 ) ]
+                : ticks[ Math.min( n - 1, zeroIndex + 1 ) ];
+
+            // Default to the first tick if no zero tick is present
+            return ticks[ 0 ];
+
+        }
+
+        // If we found an interval, calculate the point based on logarithmic interpolation
+        const [ a, b ] = [ ticks[ i0 ], ticks[ i0 + 1 ] ], [ pa, pb ] = [ positions[ i0 ], positions[ i0 + 1 ] ];
+        const t: number = Math.abs( pb - pa ) < 1e-15 ? 0 : ( p - pa ) / ( pb - pa );
+        const sign: number = a < 0 && b < 0 ? -1 : 1;
+
+        // Logarithm and exponentiation functions with respect to the base
+        const log = ( x: number ) : number => Math.log( Math.abs( x ) + Number.EPSILON ) / Math.log( base );
+        const exp = ( v: number ) : number => Math.pow( base, v ) - Number.EPSILON;
+
+        // Calculate the point using logarithmic interpolation
+        return Number ( ( sign * exp( log( a ) + t * ( log( b ) - log( a ) ) ) ).toFixed( 9 ) );
+
+    }
+
+    /**
      * Computes the percentage for a given value based on the scale's
      * min and max (logarithmic).
      * 
