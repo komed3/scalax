@@ -20,6 +20,15 @@ You can install `scalax` via npm:
 npm install scalax
 ```
 
+Use the package in browser environments via jsDelivr:
+
+```html
+<script type="module">
+  import { Scale } from 'https://cdn.jsdelivr.net/npm/scalax@1.0.0/+esm';
+  const scale = new Scale.linear( … );
+</script>
+```
+
 ## Quick Start
 
 Here is a minimal example of how to use `scalax` to create a logarithmic scale and retrieve tick values:
