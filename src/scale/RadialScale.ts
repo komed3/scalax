@@ -101,6 +101,8 @@ export class RadialScale extends LinearScale {
             // Ensure stepSize is at least precision
             this.stepSize = Math.max( this.stepSize, this.precision );
 
+            let attempts: number = 0;
+
             do {
 
                 // For radial scales, we typically want to start from 0 (or multiple of stepSize)
@@ -130,7 +132,12 @@ export class RadialScale extends LinearScale {
                     ? nextSteps[ currentIndex + 1 ] 
                     : 360;
 
-            } while ( true );
+            } while ( ++attempts < 100 );
+
+            // To many attempts, scale calculation failed
+            if ( attempts === 100 ) throw new Error (
+                `The scale was unable to be calculated, try to allow more ticks`
+            );
 
             // Computes the tick values
             this.ticks = this._ticks( this.tickAmount, this.stepSize, this.min ).map( t => t % 360 );
