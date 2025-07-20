@@ -24,7 +24,7 @@ Use the package in browser environments via jsDelivr:
 
 ```html
 <script type="module">
-  import { Scale } from 'https://cdn.jsdelivr.net/npm/scalax@1.0.0/+esm';
+  import { Scale } from 'https://cdn.jsdelivr.net/npm/scalax@1.0.1/+esm';
   const scale = new Scale.linear( … );
 </script>
 ```

@@ -59,7 +59,10 @@ export class RadialScale extends LinearScale {
     protected override _nearest ( value: number ) : number {
 
         // Special handling for radial scales (degrees)
-        const commonDegrees: number[] = [ 0, 1, 2, 3, 5, 6, 10, 15, 30, 45, 60, 90, 120, 180, 360 ];
+        const commonDegrees: number[] = [
+            0, 1, 2, 3, 5, 6, 10, 15, 30,
+            45, 60, 90, 120, 180, 360
+        ];
 
         // Find the closest common degree value
         let nearest: number = commonDegrees[ 0 ];
