@@ -18,8 +18,8 @@
     "LICENSE"
   ],
   "devDependencies": {
-    "@types/node": "^24.0.15",
-    "typescript": "^5.8.3"
+    "@types/node": "^24.2.1",
+    "typescript": "^5.9.2"
   },
   "scripts": {
     "build": "tsc"
